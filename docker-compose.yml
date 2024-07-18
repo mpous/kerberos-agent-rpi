@@ -1,0 +1,32 @@
+version: '2.1'
+
+services:
+  
+  kerberos-agent:
+    image: bh.cr/kerberos_io/agent
+    network_mode: host
+    tty: true
+    restart: always
+    volumes:
+        - 'kerberosagent_recordings:/home/agent/data/recordings:rw'
+        - 'kerberosagent_snapshots:/home/agent/data/snapshots:rw'
+        - 'kerberosagent_config:/home/agent/data/config:rw'
+  
+  video-streaming:
+    build: balena-cam/.
+    network_mode: host
+    labels:
+      io.balena.features.supervisor-api: '1'
+
+  video-capture:
+    image: alanb128/video-capture:pi-20210717
+    network_mode: host
+    privileged: true
+    labels:
+          io.balena.features.balena-api: '1'
+
+volumes:
+  kerberosagent_recordings:
+  kerberosagent_snapshots:
+  kerberosagent_config:
+  
